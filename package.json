@@ -6,11 +6,18 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "build:analyze": "npm run build && npm run analyze:size",
+    "build:production": "NODE_ENV=production npm run build",
+    "analyze:size": "du -sh dist && find dist -name '*.js' -o -name '*.css' | xargs ls -lh",
     "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "preview": "vite preview",
     "test": "vitest",
     "test:ui": "vitest --ui",
-    "test:coverage": "vitest --coverage"
+    "test:coverage": "vitest --coverage",
+    "test:ci": "vitest run --coverage",
+    "clean": "rm -rf dist node_modules/.cache",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "react": "^19.1.0",
