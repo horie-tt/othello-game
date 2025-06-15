@@ -5,7 +5,9 @@
       "Bash(mv:*)",
       "Bash(npm install:*)",
       "Bash(npm test:*)",
-      "Bash(mkdir:*)"
+      "Bash(mkdir:*)",
+      "Bash(gh auth:*)",
+      "Bash(gh run view:*)"
     ],
     "deny": []
   }
