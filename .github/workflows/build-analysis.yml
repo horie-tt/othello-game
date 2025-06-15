@@ -1,0 +1,95 @@
+name: Build Analysis
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  analyze-build:
+    name: Analyze Build Output
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Build project
+      run: npm run build
+
+    - name: Analyze build size
+      run: |
+        echo "## 📊 Build Size Analysis" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        
+        # 全体サイズ
+        TOTAL_SIZE=$(du -sh dist | cut -f1)
+        echo "**Total Build Size**: $TOTAL_SIZE" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        
+        # ファイル別サイズ
+        echo "### 📁 File Breakdown" >> $GITHUB_STEP_SUMMARY
+        echo "| File | Size | Type |" >> $GITHUB_STEP_SUMMARY
+        echo "|------|------|------|" >> $GITHUB_STEP_SUMMARY
+        
+        find dist -type f -name "*.js" -o -name "*.css" -o -name "*.html" | while read file; do
+          size=$(du -h "$file" | cut -f1)
+          filename=$(basename "$file")
+          extension="${filename##*.}"
+          echo "| $filename | $size | $extension |" >> $GITHUB_STEP_SUMMARY
+        done
+        
+        echo "" >> $GITHUB_STEP_SUMMARY
+        
+        # アセット統計
+        JS_COUNT=$(find dist -name "*.js" | wc -l)
+        CSS_COUNT=$(find dist -name "*.css" | wc -l)
+        HTML_COUNT=$(find dist -name "*.html" | wc -l)
+        MAP_COUNT=$(find dist -name "*.map" | wc -l)
+        
+        echo "### 📈 Asset Statistics" >> $GITHUB_STEP_SUMMARY
+        echo "- **JavaScript files**: $JS_COUNT" >> $GITHUB_STEP_SUMMARY
+        echo "- **CSS files**: $CSS_COUNT" >> $GITHUB_STEP_SUMMARY
+        echo "- **HTML files**: $HTML_COUNT" >> $GITHUB_STEP_SUMMARY
+        echo "- **Source maps**: $MAP_COUNT" >> $GITHUB_STEP_SUMMARY
+
+    - name: Upload detailed build artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-analysis-${{ github.run_number }}
+        path: |
+          dist/
+          package.json
+          package-lock.json
+        retention-days: 7
+
+    - name: Generate build manifest
+      run: |
+        mkdir -p build-reports
+        echo "# Build Manifest" > build-reports/manifest.md
+        echo "Generated: $(date)" >> build-reports/manifest.md
+        echo "Commit: ${{ github.sha }}" >> build-reports/manifest.md
+        echo "Branch: ${{ github.ref_name }}" >> build-reports/manifest.md
+        echo "" >> build-reports/manifest.md
+        echo "## Files" >> build-reports/manifest.md
+        find dist -type f | sort | while read file; do
+          size=$(du -h "$file" | cut -f1)
+          echo "- $file ($size)" >> build-reports/manifest.md
+        done
+
+    - name: Upload build reports
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-reports-${{ github.run_number }}
+        path: build-reports/
+        retention-days: 30

@@ -1,0 +1,93 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build for Production
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Run tests
+      run: npm test -- --run
+
+    - name: Build project
+      run: npm run build
+
+    - name: Setup Pages
+      uses: actions/configure-pages@v4
+
+    - name: Upload build artifacts to GitHub Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: production-build-${{ github.sha }}
+        path: |
+          dist/
+          !dist/**/*.map
+        retention-days: 90
+
+    - name: Upload to Pages
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: ./dist
+
+    - name: Generate build report
+      run: |
+        echo "## Production Build Report 📦" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "**Build Date**: $(date)" >> $GITHUB_STEP_SUMMARY
+        echo "**Commit**: ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+        echo "**Branch**: ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### Build Artifacts" >> $GITHUB_STEP_SUMMARY
+        echo "| File Type | Count | Size |" >> $GITHUB_STEP_SUMMARY
+        echo "|-----------|-------|------|" >> $GITHUB_STEP_SUMMARY
+        echo "| CSS | $(find dist -name "*.css" | wc -l) | $(find dist -name "*.css" -exec du -ch {} + | tail -1 | cut -f1) |" >> $GITHUB_STEP_SUMMARY
+        echo "| JS | $(find dist -name "*.js" | wc -l) | $(find dist -name "*.js" -exec du -ch {} + | tail -1 | cut -f1) |" >> $GITHUB_STEP_SUMMARY
+        echo "| HTML | $(find dist -name "*.html" | wc -l) | $(find dist -name "*.html" -exec du -ch {} + | tail -1 | cut -f1) |" >> $GITHUB_STEP_SUMMARY
+        echo "| **Total** | **$(find dist -type f | wc -l) files** | **$(du -sh dist | cut -f1)** |" >> $GITHUB_STEP_SUMMARY
+
+  deploy:
+    name: Deploy to GitHub Pages
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v4
+
+    - name: Deployment summary
+      run: |
+        echo "## Deployment Successful 🎉" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "🌐 **Live URL**: ${{ steps.deployment.outputs.page_url }}" >> $GITHUB_STEP_SUMMARY
+        echo "📦 **Deployed from**: ${{ github.ref_name }}@${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+        echo "⏰ **Deployed at**: $(date)" >> $GITHUB_STEP_SUMMARY
