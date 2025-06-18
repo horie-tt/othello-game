@@ -5,6 +5,7 @@ const Cell: React.FC<CellProps> = ({ value, row, col, onClick, isValidMove, isPl
     if (value === 'black') {
       return (
         <div className="relative w-full h-full flex items-center justify-center">
+          {/* 黒石 - マス目より8px小さく */}
           <div 
             className="relative w-[calc(100%-8px)] h-[calc(100%-8px)] rounded-full shadow-2xl border-2 border-gray-600"
             style={{
@@ -12,6 +13,7 @@ const Cell: React.FC<CellProps> = ({ value, row, col, onClick, isValidMove, isPl
               backgroundImage: 'radial-gradient(circle at 30% 30%, #4b5563, #1f2937, #000000)'
             }}
           >
+            {/* 光沢効果 */}
             <div className="absolute top-1 left-1/4 w-1/4 h-1/4 bg-white rounded-full opacity-20"></div>
           </div>
         </div>
@@ -20,6 +22,7 @@ const Cell: React.FC<CellProps> = ({ value, row, col, onClick, isValidMove, isPl
     if (value === 'white') {
       return (
         <div className="relative w-full h-full flex items-center justify-center">
+          {/* 白石 - マス目より8px小さく */}
           <div 
             className="relative w-[calc(100%-8px)] h-[calc(100%-8px)] rounded-full shadow-2xl border-2 border-gray-400"
             style={{
@@ -27,6 +30,7 @@ const Cell: React.FC<CellProps> = ({ value, row, col, onClick, isValidMove, isPl
               backgroundImage: 'radial-gradient(circle at 30% 30%, #ffffff, #f3f4f6, #e5e7eb)'
             }}
           >
+            {/* 光沢効果 */}
             <div className="absolute top-1 left-1/4 w-1/4 h-1/4 bg-white rounded-full opacity-80"></div>
           </div>
         </div>
