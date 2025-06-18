@@ -20,14 +20,16 @@ describe('Cell', () => {
   });
 
   it('renders black piece', () => {
-    render(<Cell {...defaultProps} value="black" />);
-    const blackPiece = screen.getByText('●');
+    const { container } = render(<Cell {...defaultProps} value="black" />);
+    // 黒石の要素（radial-gradientスタイルを持つdiv）を確認
+    const blackPiece = container.querySelector('[style*="radial-gradient"][style*="#1f2937"]');
     expect(blackPiece).toBeInTheDocument();
   });
 
   it('renders white piece', () => {
-    render(<Cell {...defaultProps} value="white" />);
-    const whitePiece = screen.getByText('○');
+    const { container } = render(<Cell {...defaultProps} value="white" />);
+    // 白石の要素（radial-gradientスタイルを持つdiv）を確認
+    const whitePiece = container.querySelector('[style*="radial-gradient"][style*="#ffffff"]');
     expect(whitePiece).toBeInTheDocument();
   });
 
@@ -36,8 +38,8 @@ describe('Cell', () => {
       <Cell {...defaultProps} isValidMove={true} isPlayerTurn={true} />
     );
     
-    // 有効な手のインジケーターが表示されているかチェック
-    const validMoveIndicator = container.querySelector('.bg-gray-600');
+    // 有効な手のインジケーター（薄い水色の背景）が表示されているかチェック
+    const validMoveIndicator = container.querySelector('.valid-move-light-blue');
     expect(validMoveIndicator).toBeInTheDocument();
   });
 
@@ -46,7 +48,7 @@ describe('Cell', () => {
       <Cell {...defaultProps} isValidMove={true} isPlayerTurn={false} />
     );
     
-    const validMoveIndicator = container.querySelector('.bg-gray-600');
+    const validMoveIndicator = container.querySelector('.valid-move-light-blue');
     expect(validMoveIndicator).not.toBeInTheDocument();
   });
 
@@ -81,7 +83,7 @@ describe('Cell', () => {
     
     const cell = container.firstChild as HTMLElement;
     expect(cell).toHaveClass('cursor-pointer');
-    expect(cell).toHaveClass('hover:bg-green-400');
+    expect(cell).toHaveClass('othello-cell-green');
   });
 
   it('applies cursor-not-allowed for invalid moves', () => {
@@ -91,5 +93,12 @@ describe('Cell', () => {
     
     const cell = container.firstChild as HTMLElement;
     expect(cell).toHaveClass('cursor-not-allowed');
+  });
+
+  it('applies othello board green background to all cells', () => {
+    const { container } = render(<Cell {...defaultProps} />);
+    
+    const cell = container.firstChild as HTMLElement;
+    expect(cell).toHaveClass('othello-cell-green');
   });
 });

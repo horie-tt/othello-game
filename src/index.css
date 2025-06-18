@@ -1,3 +1,13 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* カスタムオセロ盤のスタイル */
+.othello-cell-green {
+  background-color: #059669; /* 深い緑色 */
+  border-color: #065f46; /* より深い緑色の境界線 */
+}
+
+.valid-move-light-blue {
+  background-color: rgba(186, 230, 253, 0.6); /* 薄い水色 */
+}

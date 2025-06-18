@@ -73,9 +73,14 @@ describe('GameInfo', () => {
   });
 
   it('renders black and white piece indicators', () => {
-    render(<GameInfo {...defaultProps} />);
+    const { container } = render(<GameInfo {...defaultProps} />);
     
-    expect(screen.getByText('●')).toBeInTheDocument();
-    expect(screen.getByText('○')).toBeInTheDocument();
+    // 黒石のグラデーション要素を確認
+    const blackPiece = container.querySelector('[style*="radial-gradient"][style*="#1f2937"]');
+    expect(blackPiece).toBeInTheDocument();
+    
+    // 白石のグラデーション要素を確認
+    const whitePiece = container.querySelector('[style*="radial-gradient"][style*="#ffffff"]');
+    expect(whitePiece).toBeInTheDocument();
   });
 });
