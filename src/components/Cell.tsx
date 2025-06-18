@@ -40,8 +40,8 @@ const Cell: React.FC<CellProps> = ({ value, row, col, onClick, isValidMove, isPl
     // 有効な手を表示
     if (isValidMove && isPlayerTurn) {
       return (
-        <div className="w-full h-full bg-sky-200 bg-opacity-60 flex items-center justify-center">
-          <div className="w-3 h-3 bg-sky-400 rounded-full opacity-70"></div>
+        <div className="w-full h-full valid-move-light-blue flex items-center justify-center">
+          <div className="w-3 h-3 rounded-full" style={{backgroundColor: '#38bdf8', opacity: 0.7}}></div>
         </div>
       );
     }
@@ -50,7 +50,7 @@ const Cell: React.FC<CellProps> = ({ value, row, col, onClick, isValidMove, isPl
   };
 
   const getCellClass = () => {
-    let baseClass = "aspect-square bg-green-500 border border-green-700 flex items-center justify-center transition-colors";
+    let baseClass = "aspect-square othello-cell-green border flex items-center justify-center transition-colors";
     
     if (isValidMove && isPlayerTurn) {
       baseClass += " cursor-pointer";
