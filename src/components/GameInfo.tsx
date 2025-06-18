@@ -37,10 +37,14 @@ const GameInfo: React.FC<GameInfoProps> = ({ currentPlayer, scores, gameStatus }
         <div className="grid grid-cols-2 gap-4">
           <div className="text-center">
             <div className="flex items-center justify-center mb-2">
-              <div className="relative w-7 h-7 bg-gradient-to-br from-gray-900 to-black rounded-full shadow-lg border-2 border-gray-800 mr-2">
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <span className="text-white text-xs font-bold">●</span>
-                </div>
+              <div 
+                className="relative w-7 h-7 rounded-full shadow-lg border-2 border-gray-600 mr-2"
+                style={{
+                  background: '#1f2937',
+                  backgroundImage: 'radial-gradient(circle at 30% 30%, #4b5563, #1f2937, #000000)'
+                }}
+              >
+                <div className="absolute top-0.5 left-1.5 w-1.5 h-1.5 bg-white rounded-full opacity-20"></div>
               </div>
               <span className="font-semibold">あなた</span>
             </div>
@@ -49,10 +53,14 @@ const GameInfo: React.FC<GameInfoProps> = ({ currentPlayer, scores, gameStatus }
           
           <div className="text-center">
             <div className="flex items-center justify-center mb-2">
-              <div className="relative w-7 h-7 bg-gradient-to-br from-gray-100 to-white rounded-full shadow-lg border-2 border-gray-400 mr-2">
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <span className="text-gray-600 text-xs font-bold">○</span>
-                </div>
+              <div 
+                className="relative w-7 h-7 rounded-full shadow-lg border-2 border-gray-400 mr-2"
+                style={{
+                  background: '#ffffff',
+                  backgroundImage: 'radial-gradient(circle at 30% 30%, #ffffff, #f3f4f6, #e5e7eb)'
+                }}
+              >
+                <div className="absolute top-0.5 left-1.5 w-1.5 h-1.5 bg-white rounded-full opacity-80"></div>
               </div>
               <span className="font-semibold">CPU</span>
             </div>
