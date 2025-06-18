@@ -4,20 +4,34 @@ const Cell: React.FC<CellProps> = ({ value, row, col, onClick, isValidMove, isPl
   const getCellContent = () => {
     if (value === 'black') {
       return (
-        <div className="relative w-9 h-9 bg-gradient-to-br from-gray-900 to-black rounded-full shadow-xl border-3 border-gray-800">
-          <div className="absolute top-1 left-1 w-2 h-2 bg-gray-600 rounded-full opacity-60"></div>
-          <div className="absolute inset-0 flex items-center justify-center">
-            <span className="text-white text-xs font-bold opacity-80">●</span>
+        <div className="relative w-full h-full flex items-center justify-center">
+          {/* 黒石 - マス目より8px小さく */}
+          <div 
+            className="relative w-[calc(100%-8px)] h-[calc(100%-8px)] rounded-full shadow-2xl border-2 border-gray-600"
+            style={{
+              background: '#1f2937',
+              backgroundImage: 'radial-gradient(circle at 30% 30%, #4b5563, #1f2937, #000000)'
+            }}
+          >
+            {/* 光沢効果 */}
+            <div className="absolute top-1 left-1/4 w-1/4 h-1/4 bg-white rounded-full opacity-20"></div>
           </div>
         </div>
       );
     }
     if (value === 'white') {
       return (
-        <div className="relative w-9 h-9 bg-gradient-to-br from-gray-100 to-white rounded-full shadow-xl border-3 border-gray-400">
-          <div className="absolute top-1 left-1 w-2 h-2 bg-gray-300 rounded-full opacity-40"></div>
-          <div className="absolute inset-0 flex items-center justify-center">
-            <span className="text-gray-600 text-xs font-bold">○</span>
+        <div className="relative w-full h-full flex items-center justify-center">
+          {/* 白石 - マス目より8px小さく */}
+          <div 
+            className="relative w-[calc(100%-8px)] h-[calc(100%-8px)] rounded-full shadow-2xl border-2 border-gray-400"
+            style={{
+              background: '#ffffff',
+              backgroundImage: 'radial-gradient(circle at 30% 30%, #ffffff, #f3f4f6, #e5e7eb)'
+            }}
+          >
+            {/* 光沢効果 */}
+            <div className="absolute top-1 left-1/4 w-1/4 h-1/4 bg-white rounded-full opacity-80"></div>
           </div>
         </div>
       );
@@ -26,8 +40,8 @@ const Cell: React.FC<CellProps> = ({ value, row, col, onClick, isValidMove, isPl
     // 有効な手を表示
     if (isValidMove && isPlayerTurn) {
       return (
-        <div className="w-7 h-7 bg-gray-700 bg-opacity-40 rounded-full border-2 border-gray-800 border-dashed flex items-center justify-center">
-          <div className="w-4 h-4 bg-gray-600 rounded-full opacity-50"></div>
+        <div className="w-full h-full valid-move-light-blue flex items-center justify-center">
+          <div className="w-3 h-3 rounded-full" style={{backgroundColor: '#38bdf8', opacity: 0.7}}></div>
         </div>
       );
     }
@@ -36,10 +50,10 @@ const Cell: React.FC<CellProps> = ({ value, row, col, onClick, isValidMove, isPl
   };
 
   const getCellClass = () => {
-    let baseClass = "aspect-square bg-green-500 border border-green-700 flex items-center justify-center transition-colors";
+    let baseClass = "aspect-square othello-cell-green border flex items-center justify-center transition-colors";
     
     if (isValidMove && isPlayerTurn) {
-      baseClass += " cursor-pointer hover:bg-green-400";
+      baseClass += " cursor-pointer";
     } else if (!value) {
       baseClass += " cursor-not-allowed";
     }
